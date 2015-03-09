@@ -16,10 +16,10 @@ public class City implements Agent{
 	 * @param healthRange an int array of size 2. Defines how healthy citizen can be. Index 0 is min, index 1 is max. 
 	 */
 	public City(int populationSize, int intialFood, int[] produceRange, double[] chanceRange, int[] consumeRange, int[] healthRange){
-		population = new ArrayList(populationSize);
+		population = new ArrayList<Citizen>(populationSize);
 		Citizen temp;
 		for(int i = 0; i < populationSize ; i++){
-			temp = new Citizen(produceRange, chanceRange, consumeRange, healthRange);
+			temp = new Citizen(this, produceRange, chanceRange, consumeRange, healthRange);
 			population.add(temp);
 		}
 		
@@ -34,6 +34,12 @@ public class City implements Agent{
 		}
 		for(Citizen p : population){
 			p.consume();
+		}
+		
+		for(int i = 0; i < population.size() ; i++){
+			if(population.get(i).isDead()){
+				population.remove(i);
+			}
 		}
 	}
 	
@@ -52,6 +58,32 @@ public class City implements Agent{
 		}
 		
 		return fulfilled;
+	}
+	
+	public String toString(){
+		String returnString = "";
+		
+		returnString += "City Stats: " + "\n";
+		returnString += "	Population Size - " + population.size() + "\n";
+		returnString += "	Food Stored - " + foodStored + "\n";
+		returnString += "\n";
+		returnString += "	Citizens:\n";
+		for(Citizen c : population){
+			returnString += "		Citizen:\n";
+			returnString += c.toString();
+		}
+		
+		return returnString;
+	}
+	
+	public String shortStats(){
+		String returnString = "";
+		
+		returnString += "City Stats: " + "\n";
+		returnString += "	Population Size - " + population.size() + "\n";
+		returnString += "	Food Stored - " + foodStored + "\n";
+		
+		return returnString;
 	}
 
 }

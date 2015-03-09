@@ -16,7 +16,7 @@ public class Citizen implements Agent{
 	
 	private boolean isKill;
 	
-	public Citizen(int[] produceRange, double[] chanceRange, int[] consumeRange, int[] healthRange){
+	public Citizen(City c, int[] produceRange, double[] chanceRange, int[] consumeRange, int[] healthRange){
 		foodProduce = World.random.nextInt(produceRange[1] - produceRange[0] + 1) + produceRange[0];
 		
 		chanceToProduce =chanceRange[0] + World.random.nextDouble() * (chanceRange[1] - chanceRange[0]);	//min + Math.random() * (max - min)
@@ -25,6 +25,10 @@ public class Citizen implements Agent{
 		
 		maxHealth = World.random.nextInt(healthRange[1] - healthRange[0] + 1) + healthRange[0];
 		health = maxHealth;		
+		
+		city = c;
+		
+		isKill = false; 
 	}
 	
 	@Override
@@ -51,6 +55,23 @@ public class Citizen implements Agent{
 		if(health == 0){
 			isKill = true; 
 		}
+	}
+	
+	public boolean isDead(){
+		return isKill;
+	}
+	
+	public String toString(){
+		String returnString ="";
+		
+		returnString += "			Amount of Food to Produce - " + foodProduce + "\n";
+		returnString += "			Chance to Produce - " + chanceToProduce + "\n";
+		returnString += "			Amount to Consume - " + foodConsume + "\n";
+		returnString += "			Current Health - " + health + "\n";
+		returnString += "			Max Health - " + maxHealth + "\n";
+		returnString += "			Has Eaten - " + hasConsumed + "\n";
+		
+		return returnString;
 	}
 
 }

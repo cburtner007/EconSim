@@ -5,6 +5,7 @@ public class City implements Agent{
 
 	private List<Citizen> population;	//The citizens that are apart of this city
 	private int foodStored;	//How much food is stored in the city
+	private Executioner executioner;
 	
 	/**
 	 * 
@@ -24,6 +25,7 @@ public class City implements Agent{
 		}
 		
 		foodStored = intialFood;
+		executioner = new Executioner(.1);
 	}
 	
 	@Override
@@ -32,6 +34,9 @@ public class City implements Agent{
 		for(Citizen p : population){
 			p.produce();
 		}
+		
+		executioner.thinPopulace(population, foodStored);
+		
 		for(Citizen p : population){
 			p.consume();
 		}

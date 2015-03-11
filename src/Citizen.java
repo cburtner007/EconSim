@@ -73,5 +73,9 @@ public class Citizen implements Agent{
 		
 		return returnString;
 	}
+	
+	public int getFoodConsume(){
+		return foodConsume;
+	}
 
 }

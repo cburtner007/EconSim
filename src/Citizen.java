@@ -8,12 +8,19 @@ public class Citizen implements Agent{
 	private int foodProduce;
 	private double chanceToProduce;
 	
+	private int gold = 0;
+	
+	private double laborPerHour = 0;
+	private double laborAvailable = 0;
+	private double maxLaborAvailable = 0;	//A citizen can store x10 of their laborAvailable 
+	
 	private int foodConsume;
 	private boolean hasConsumed;
 	
 	private int health;
 	private int maxHealth;
 	
+	private boolean isEmployed;
 	private boolean isKill;
 	
 	public Citizen(City c, int[] produceRange, double[] chanceRange, int[] consumeRange, int[] healthRange){
@@ -31,12 +38,46 @@ public class Citizen implements Agent{
 		isKill = false; 
 	}
 	
-	@Override
-	public void tick() {
-		// TODO Auto-generated method stub
+	public Citizen(City c, double laborPerHour){
+		this.laborPerHour = laborPerHour;
+		this.maxLaborAvailable = laborPerHour * 10;
+		city = c;
 		
+		isKill = false; 
 	}
 	
+	@Override
+	public void tick() {
+		accrueLabor();
+	}
+	
+	public int drainLabor(int requestedLabor){
+		int amountToReturn = 0; 
+		
+		if(requestedLabor >  this.laborAvailable){
+			amountToReturn = 0;
+		}else{
+			amountToReturn = requestedLabor;
+		}
+		
+		laborAvailable = laborAvailable - amountToReturn;
+		
+		return amountToReturn;
+	}
+	
+	public void pay(int goldToPay){
+		this.gold += goldToPay;
+	}
+	
+	//Add labor to available pool, up to the max
+	private void accrueLabor(){
+		this.laborAvailable += this.laborPerHour;
+		if(this.laborAvailable > this.maxLaborAvailable){
+			this.laborAvailable = this.maxLaborAvailable;
+		}
+	}
+	
+//Old code--------------------------------------------------------------------------------------------------------------------------	
 	public void produce(){
 		if(Math.random() < chanceToProduce){
 			city.addFood(foodProduce);

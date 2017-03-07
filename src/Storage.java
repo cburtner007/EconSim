@@ -1,4 +1,5 @@
 import java.util.HashMap;
+import java.util.Map;
 
 public class Storage {
 	HashMap<Resources,Integer> input;
@@ -66,6 +67,36 @@ public class Storage {
 		}
 		
 		return finalTake;
+	}
+
+	public boolean hasInputForLabor(HashMap<Resources, Integer> inputPerLabor,int laborHours) {
+		boolean returnFlag = true;
+		
+		for(Resources r : inputPerLabor.keySet()){
+			//If we have less of resource r stored than what the requirement (inputPerLabor) asks for, return false
+			if(input.get(r) < inputPerLabor.get(r)*laborHours){
+				returnFlag = false;
+			}
+		}
+		return returnFlag;
+	}
+
+	public HashMap<Resources, Integer> consumeInput(HashMap<Resources, Integer> inputPerLabor, HashMap<Resources, Integer>outputPerLabor, int laborHours) {
+		HashMap<Resources, Integer> finalOutput = new HashMap<Resources, Integer>();
+		for(Resources r : inputPerLabor.keySet()){
+			input.put(r, input.get(r) - inputPerLabor.get(r)*laborHours);
+		}
+		for(Resources r : outputPerLabor.keySet()){
+			finalOutput.put(r, outputPerLabor.get(r)*laborHours);
+		}
+		
+		return finalOutput;
+	}
+
+	public void storeOutput(HashMap<Resources, Integer> producedGoods) {
+		for(Resources r : producedGoods.keySet()){
+			output.put(r, output.get(r)+producedGoods.get(r));
+		}
 	}
 	
 }

@@ -12,7 +12,7 @@ public class Citizen implements Agent{
 	
 	private double laborPerHour = 0;
 	private double laborAvailable = 0;
-	private double maxLaborAvailable = 0;	//A citizen can store x10 of their laborAvailable 
+	private double maxLaborAvailable = 0;	//A citizen can store x10 of their laborPerHour 
 	
 	private int foodConsume;
 	private boolean hasConsumed;
@@ -42,6 +42,13 @@ public class Citizen implements Agent{
 		this.laborPerHour = laborPerHour;
 		this.maxLaborAvailable = laborPerHour * 10;
 		city = c;
+		
+		isKill = false; 
+	}
+	
+	public Citizen(double laborPerHour){
+		this.laborPerHour = laborPerHour;
+		this.maxLaborAvailable = laborPerHour * 10;
 		
 		isKill = false; 
 	}
@@ -103,7 +110,7 @@ public class Citizen implements Agent{
 	}
 	
 	public String toString(){
-		String returnString ="";
+		String returnString ="CITIZEN \n";
 		
 		returnString += "			Amount of Food to Produce - " + foodProduce + "\n";
 		returnString += "			Chance to Produce - " + chanceToProduce + "\n";

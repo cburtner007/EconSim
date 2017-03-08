@@ -2,7 +2,7 @@ import java.util.HashMap;
 import java.util.List;
 
 
-public class Business {
+public class Business implements Agent {
 	protected Storage warehouse;
 	
 	protected HashMap<Resources,Integer> inputPerLabor;

@@ -52,7 +52,7 @@ public class Citizen implements Agent{
 		
 		isKill = false; 
 	}
-	
+
 	@Override
 	public void tick() {
 		accrueLabor();
@@ -70,6 +70,10 @@ public class Citizen implements Agent{
 		laborAvailable = laborAvailable - amountToReturn;
 		
 		return amountToReturn;
+	}
+	
+	public void buyResource(BuyOffer bo){
+		
 	}
 	
 	public void pay(int goldToPay){

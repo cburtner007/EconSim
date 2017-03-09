@@ -5,6 +5,8 @@ public class Citizen implements Agent{
 	
 	private City city;
 	
+	private Storage pocket;
+	
 	private int foodProduce;
 	private double chanceToProduce;
 	
@@ -42,6 +44,7 @@ public class Citizen implements Agent{
 		this.laborPerHour = laborPerHour;
 		this.maxLaborAvailable = laborPerHour * 10;
 		city = c;
+		pocket = new Storage();
 		
 		isKill = false; 
 	}
@@ -49,6 +52,7 @@ public class Citizen implements Agent{
 	public Citizen(double laborPerHour){
 		this.laborPerHour = laborPerHour;
 		this.maxLaborAvailable = laborPerHour * 10;
+		pocket = new Storage();
 		
 		isKill = false; 
 	}
@@ -72,12 +76,46 @@ public class Citizen implements Agent{
 		return amountToReturn;
 	}
 	
-	public void buyResource(BuyOffer bo){
+	public int buyResource(SellOffer so, int amountToBuy){
+		int ppR = so.getPricePerResource();
+
+		int amountBought = so.takeResources(amountToBuy);
+		int amountToPay = amountBought * ppR;
+		this.gold = this.gold - amountToPay;
 		
+		so.getSeller().pay(amountToPay);
+		pocket.addInput(so.getResourceToSell(), amountBought);
+		
+		return amountBought;
+	}
+	
+	public void sellResource(BuyOffer bo, int amountToSell){
+		int finalSell = amountToSell;
+		if(bo.getResourcesLeftToBuy() - finalSell < 0){
+			finalSell = bo.getResourcesLeftToBuy();
+		}
+		this.gold = this.gold + bo.takeGold(finalSell);
+		bo.getBuyer().receiveResource(bo.getResourceToBuy(), this.pocket.takeOutput(bo.getResourceToBuy(), finalSell));		
+	}
+	
+	public void receiveResource(Resources rToReceive, int amount){
+		pocket.addInput(rToReceive, amount);
 	}
 	
 	public void pay(int goldToPay){
 		this.gold += goldToPay;
+	}
+	
+	public int takeGold(int goldToTake){
+		int finalTake = goldToTake;
+		if(gold - finalTake < 0){
+			finalTake = gold;
+			gold = 0;
+		}else{
+			gold = gold - finalTake;	
+		}
+		
+		return finalTake;
 	}
 	
 	//Add labor to available pool, up to the max
@@ -86,6 +124,10 @@ public class Citizen implements Agent{
 		if(this.laborAvailable > this.maxLaborAvailable){
 			this.laborAvailable = this.maxLaborAvailable;
 		}
+	}
+	
+	public Storage getPocket(){
+		return pocket;
 	}
 	
 //Old code--------------------------------------------------------------------------------------------------------------------------	
@@ -109,6 +151,50 @@ public class Citizen implements Agent{
 		}
 	}
 	
+	public City getCity() {
+		return city;
+	}
+
+	public void setCity(City city) {
+		this.city = city;
+	}
+
+	public int getGold() {
+		return gold;
+	}
+
+	public void setGold(int gold) {
+		this.gold = gold;
+	}
+
+	public double getLaborPerHour() {
+		return laborPerHour;
+	}
+
+	public void setLaborPerHour(double laborPerHour) {
+		this.laborPerHour = laborPerHour;
+	}
+
+	public double getLaborAvailable() {
+		return laborAvailable;
+	}
+
+	public void setLaborAvailable(double laborAvailable) {
+		this.laborAvailable = laborAvailable;
+	}
+
+	public double getMaxLaborAvailable() {
+		return maxLaborAvailable;
+	}
+
+	public void setMaxLaborAvailable(double maxLaborAvailable) {
+		this.maxLaborAvailable = maxLaborAvailable;
+	}
+
+	public void setPocket(Storage pocket) {
+		this.pocket = pocket;
+	}
+
 	public boolean isDead(){
 		return isKill;
 	}
@@ -116,12 +202,7 @@ public class Citizen implements Agent{
 	public String toString(){
 		String returnString ="CITIZEN \n";
 		
-		returnString += "			Amount of Food to Produce - " + foodProduce + "\n";
-		returnString += "			Chance to Produce - " + chanceToProduce + "\n";
-		returnString += "			Amount to Consume - " + foodConsume + "\n";
-		returnString += "			Current Health - " + health + "\n";
-		returnString += "			Max Health - " + maxHealth + "\n";
-		returnString += "			Has Eaten - " + hasConsumed + "\n";
+		returnString += "			Gold in Pocket - " + gold + "\n";
 		
 		return returnString;
 	}

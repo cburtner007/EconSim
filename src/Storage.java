@@ -2,6 +2,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Storage {
+	//Do we need both input and output? We could put everything in one. This was silly to do
 	HashMap<Resources,Integer> input;
 	HashMap<Resources,Integer> output;
 	
@@ -15,6 +16,15 @@ public class Storage {
 		}
 		for(Resources res : outputResourceTypes){
 			output.put(res, 0);
+		}
+	}
+	
+	public Storage(){
+		input = new HashMap<Resources, Integer>();
+		output = new HashMap<Resources, Integer>();
+		for(Resources r : Resources.values()){
+			input.put(r,0);
+			output.put(r,0);
 		}
 	}
 	
@@ -93,6 +103,12 @@ public class Storage {
 		return finalOutput;
 	}
 
+	public void storeInput(HashMap<Resources, Integer> resources){
+		for(Resources r : resources.keySet()){
+			output.put(r, output.get(r)+resources.get(r));
+		}
+	}
+	
 	public void storeOutput(HashMap<Resources, Integer> producedGoods) {
 		for(Resources r : producedGoods.keySet()){
 			output.put(r, output.get(r)+producedGoods.get(r));

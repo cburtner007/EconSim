@@ -2,18 +2,19 @@ import java.util.List;
 
 
 public class Executioner implements Agent{
+	
+	@Override
+	public void tick() {
+		// TODO Auto-generated method stub
+		
+	}/*
 
 	double chanceToExecute;
 	
 	public Executioner(double ce){
 		chanceToExecute = ce;
 	}
-	
-	@Override
-	public void tick() {
-		// TODO Auto-generated method stub
-		
-	}
+
 
 	public boolean shouldExecute(List<Citizen> currentPopulace, int currentFoodStores){
 		boolean returnFlag = false;
@@ -55,4 +56,4 @@ public class Executioner implements Agent{
 		
 		return personToExecute;
 	}
-}
+*/}

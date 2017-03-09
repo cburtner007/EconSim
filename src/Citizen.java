@@ -7,38 +7,13 @@ public class Citizen implements Agent{
 	
 	private Storage pocket;
 	
-	private int foodProduce;
-	private double chanceToProduce;
-	
 	private int gold = 0;
 	
 	private double laborPerHour = 0;
 	private double laborAvailable = 0;
 	private double maxLaborAvailable = 0;	//A citizen can store x10 of their laborPerHour 
 	
-	private int foodConsume;
-	private boolean hasConsumed;
-	
-	private int health;
-	private int maxHealth;
-	
 	private boolean isEmployed;
-	private boolean isKill;
-	
-	public Citizen(City c, int[] produceRange, double[] chanceRange, int[] consumeRange, int[] healthRange){
-		foodProduce = World.random.nextInt(produceRange[1] - produceRange[0] + 1) + produceRange[0];
-		
-		chanceToProduce =chanceRange[0] + World.random.nextDouble() * (chanceRange[1] - chanceRange[0]);	//min + Math.random() * (max - min)
-				
-		foodConsume = World.random.nextInt(consumeRange[1] - consumeRange[0] + 1) + consumeRange[0];
-		
-		maxHealth = World.random.nextInt(healthRange[1] - healthRange[0] + 1) + healthRange[0];
-		health = maxHealth;		
-		
-		city = c;
-		
-		isKill = false; 
-	}
 	
 	public Citizen(City c, double laborPerHour){
 		this.laborPerHour = laborPerHour;
@@ -46,15 +21,12 @@ public class Citizen implements Agent{
 		city = c;
 		pocket = new Storage();
 		
-		isKill = false; 
 	}
 	
 	public Citizen(double laborPerHour){
 		this.laborPerHour = laborPerHour;
 		this.maxLaborAvailable = laborPerHour * 10;
-		pocket = new Storage();
-		
-		isKill = false; 
+		pocket = new Storage();	
 	}
 
 	@Override
@@ -129,28 +101,7 @@ public class Citizen implements Agent{
 	public Storage getPocket(){
 		return pocket;
 	}
-	
-//Old code--------------------------------------------------------------------------------------------------------------------------	
-	public void produce(){
-		if(Math.random() < chanceToProduce){
-			city.addFood(foodProduce);
-		}
-	}
-	
-	public void consume(){
-		hasConsumed = city.giveFood(foodConsume);	//Has consumed will be set to "true" if citizen gets his fill
 		
-		if(hasConsumed){
-			health = maxHealth;
-		}else{
-			health--;
-		}
-		
-		if(health == 0){
-			isKill = true; 
-		}
-	}
-	
 	public City getCity() {
 		return city;
 	}
@@ -194,10 +145,6 @@ public class Citizen implements Agent{
 	public void setPocket(Storage pocket) {
 		this.pocket = pocket;
 	}
-
-	public boolean isDead(){
-		return isKill;
-	}
 	
 	public String toString(){
 		String returnString ="CITIZEN \n";
@@ -206,9 +153,6 @@ public class Citizen implements Agent{
 		
 		return returnString;
 	}
-	
-	public int getFoodConsume(){
-		return foodConsume;
-	}
+
 
 }

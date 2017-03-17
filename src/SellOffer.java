@@ -11,22 +11,30 @@ public class SellOffer {
 		pricePerResource = ppResource;
 		resourcesLeftToSell = b.getPocket().takeOutput(rToSell, nToSell);	//Take resources from seller to put on offer
 	}
-
-	public int takeResources(int takeAmount){
-		int currentAmount = resourcesLeftToSell;
-		int finalTake = 0;		
-		
-		currentAmount = currentAmount - takeAmount;
-		//Only take if there's enough. 
-		if(currentAmount >= 0){
-			finalTake = takeAmount; 
-			resourcesLeftToSell = currentAmount;
+	
+	public void fulfillBuy(BuyOffer bo){
+		if(bo.getPricePerResource() < this.pricePerResource){
+			//We want to sell for this this price or greater. If their offer is less than this price, don't bother
 		}else{
-			finalTake = takeAmount + currentAmount; //currentAmount is some negative number. This will only give us the leftovers 
+			
+		}
+	}
+
+	public int buyFromSeller(int amountToBuy){
+		int finalAmountToBuy = amountToBuy;
+		int finalGoldGive = 0;
+		
+		if(finalAmountToBuy > resourcesLeftToSell){
+			finalAmountToBuy = resourcesLeftToSell; 
 			resourcesLeftToSell = 0;
+		}else{
+			resourcesLeftToSell = resourcesLeftToSell - finalAmountToBuy;
 		}
 		
-		return finalTake;
+		finalGoldGive = finalAmountToBuy * pricePerResource;
+		seller.pay(finalGoldGive);
+		
+		return finalAmountToBuy;
 	}
 	
 	public Resources getResourceToSell() {

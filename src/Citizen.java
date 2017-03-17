@@ -50,12 +50,16 @@ public class Citizen implements Agent{
 	
 	public int buyResource(SellOffer so, int amountToBuy){
 		int ppR = so.getPricePerResource();
-
-		int amountBought = so.takeResources(amountToBuy);
+		int finalBuy = amountToBuy;
+		
+		if(so.getResourcesLeftToSell() < finalBuy){
+			finalBuy = so.getResourcesLeftToSell();
+		}
+		
+		int amountBought = so.buyFromSeller(finalBuy);
 		int amountToPay = amountBought * ppR;
 		this.gold = this.gold - amountToPay;
-		
-		so.getSeller().pay(amountToPay);
+
 		pocket.addInput(so.getResourceToSell(), amountBought);
 		
 		return amountBought;
@@ -63,11 +67,12 @@ public class Citizen implements Agent{
 	
 	public void sellResource(BuyOffer bo, int amountToSell){
 		int finalSell = amountToSell;
-		if(bo.getResourcesLeftToBuy() - finalSell < 0){
+		
+		if(bo.getResourcesLeftToBuy() < finalSell){
 			finalSell = bo.getResourcesLeftToBuy();
 		}
-		this.gold = this.gold + bo.takeGold(finalSell);
-		bo.getBuyer().receiveResource(bo.getResourceToBuy(), this.pocket.takeOutput(bo.getResourceToBuy(), finalSell));		
+		this.gold = this.gold + bo.sellToBuyer(finalSell);
+		this.pocket.takeOutput(bo.getResourceToBuy(), finalSell);		
 	}
 	
 	public void receiveResource(Resources rToReceive, int amount){

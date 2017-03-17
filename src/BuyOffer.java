@@ -13,19 +13,24 @@ public class BuyOffer {
 		buyer = b;
 		pricePerResource = ppResource;
 		goldOnOffer = b.takeGold(nToBuy * ppResource);	//Take gold from buyer to put on offer
-		resourcesLeftToBuy = goldOnOffer/ppResource;
+		resourcesLeftToBuy = nToBuy;
 	}
 
-	public int takeGold(int amountToSell){
-		int finalTake = amountToSell * pricePerResource;
-		if(goldOnOffer - finalTake < 0){
-			finalTake = goldOnOffer;
-			goldOnOffer = 0;
-		}else{
-			goldOnOffer = goldOnOffer - finalTake;	
-		}
+	public int sellToBuyer(int amountToSell){
+		int finalGoldTake = 0;//amountToSell * pricePerResource;
+		int finalAmountToSell = amountToSell;
 		
-		return finalTake;
+		if(resourcesLeftToBuy < finalAmountToSell){
+			finalAmountToSell = resourcesLeftToBuy;
+			resourcesLeftToBuy = 0;
+		}else{
+			resourcesLeftToBuy = resourcesLeftToBuy - finalAmountToSell;	
+		}
+		buyer.receiveResource(resourceToBuy, finalAmountToSell);
+		finalGoldTake = finalAmountToSell * pricePerResource;
+		goldOnOffer = goldOnOffer - finalGoldTake;
+		
+		return finalGoldTake;
 	}
 	
 	public Resources getResourceToBuy() {

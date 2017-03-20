@@ -15,6 +15,14 @@ public class BuyOffer {
 		goldOnOffer = b.takeGold(nToBuy * ppResource);	//Take gold from buyer to put on offer
 		resourcesLeftToBuy = nToBuy;
 	}
+	
+	public void fulfillSell(SellOffer so){
+		if(so.getPricePerResource() > this.pricePerResource){
+			//We want to buy for this this price or lower. If their offer is higher than this price, don't bother
+		}else{
+			resourcesLeftToBuy = resourcesLeftToBuy - this.buyer.buyResource(so, resourcesLeftToBuy);
+		}
+	}
 
 	public int sellToBuyer(int amountToSell){
 		int finalGoldTake = 0;//amountToSell * pricePerResource;
@@ -31,6 +39,14 @@ public class BuyOffer {
 		goldOnOffer = goldOnOffer - finalGoldTake;
 		
 		return finalGoldTake;
+	}
+	
+	public boolean checkIfFilled(){
+		if(resourcesLeftToBuy == 0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 	public Resources getResourceToBuy() {

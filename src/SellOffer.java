@@ -16,7 +16,7 @@ public class SellOffer {
 		if(bo.getPricePerResource() < this.pricePerResource){
 			//We want to sell for this this price or greater. If their offer is less than this price, don't bother
 		}else{
-			
+			resourcesLeftToSell = resourcesLeftToSell - this.seller.sellResource(bo, resourcesLeftToSell);
 		}
 	}
 
@@ -35,6 +35,14 @@ public class SellOffer {
 		seller.pay(finalGoldGive);
 		
 		return finalAmountToBuy;
+	}
+	
+	public boolean checkIfFilled(){
+		if(resourcesLeftToSell == 0){
+			return true;
+		}else{
+			return false;
+		}
 	}
 	
 	public Resources getResourceToSell() {

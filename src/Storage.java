@@ -26,6 +26,7 @@ public class Storage {
 	public Storage(){
 		input = new HashMap<Resources, Integer>();
 		output = new HashMap<Resources, Integer>();
+		store = new HashMap<Resources, Integer>();
 		for(Resources r : Resources.values()){
 			input.put(r,0);
 			output.put(r,0);

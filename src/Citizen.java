@@ -65,14 +65,15 @@ public class Citizen implements Agent{
 		return amountBought;
 	}
 	
-	public void sellResource(BuyOffer bo, int amountToSell){
+	public int sellResource(BuyOffer bo, int amountToSell){
 		int finalSell = amountToSell;
 		
 		if(bo.getResourcesLeftToBuy() < finalSell){
 			finalSell = bo.getResourcesLeftToBuy();
 		}
 		this.gold = this.gold + bo.sellToBuyer(finalSell);
-		this.pocket.takeOutput(bo.getResourceToBuy(), finalSell);		
+		this.pocket.takeOutput(bo.getResourceToBuy(), finalSell);
+		return finalSell;
 	}
 	
 	public void receiveResource(Resources rToReceive, int amount){

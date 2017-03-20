@@ -15,22 +15,44 @@ public class Marketplace {
 	}
 	
 	public void postSellOffer(Citizen c, Resources r, int ppResource, int nResources){
-		sellOffers.get(r).add(new SellOffer(r, c, ppResource, nResources));
+		SellOffer newSo = new SellOffer(r, c, ppResource, nResources);
+		sellOffers.get(r).add(newSo);
+		while(checkForCompatibleBuy(r,newSo) && !newSo.checkIfFilled()){
+			newSo.fulfillBuy(findHighestBuy(r));
+		}
 	}
 	
 	public void postBuyOffer(Citizen c, Resources r, int ppResource, int nResources){
-		buyOffers.get(r).add(new BuyOffer(r, c, ppResource, nResources));
+		BuyOffer newBo = new BuyOffer(r, c, ppResource, nResources);
+		buyOffers.get(r).add(newBo);
+		while(checkForCompatibleSell(r,newBo) && !newBo.checkIfFilled()){
+			newBo.fulfillSell(findLowestSale(r));
+		}
 	}
 
-	public boolean checkForBetterBuy(){
+	public boolean checkForCompatibleBuy(Resources r, SellOffer so){
 		boolean returnFlag = false;
+		BuyOffer bo = this.findHighestBuy(r);
+		if(bo.getPricePerResource() > so.getPricePerResource()){
+			returnFlag = true;
+		}
+		return returnFlag;
+	}
+	 
+	public boolean checkForCompatibleSell(Resources r, BuyOffer bo){
+		boolean returnFlag = false;
+		SellOffer so = this.findLowestSale(r);
+		if(so.getPricePerResource() < bo.getPricePerResource()){
+			returnFlag = true;
+		}
+		
 		return returnFlag;
 	}
 	
-	public boolean checkForBetterSell(){
-		boolean returnFlag = false;
-		return returnFlag;
-	}
+	//There really isn't that much difference between a "Sell" and a "Buy" both are offers. 
+	
+	//Neither party should interact directly with the other. Transaction should take place through marketplace
+	//fulfilling "compatible" orders
 	
 	public SellOffer findLowestSale(Resources r){
 		SellOffer returnOffer = null;

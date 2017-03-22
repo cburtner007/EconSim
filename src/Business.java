@@ -19,7 +19,12 @@ public class Business implements Agent {
 	public Business(Resources[] inResTypes, Resources[] outResTypes){
 		warehouse = new Storage(inResTypes, outResTypes);
 	}
-		
+
+	public void hire(Citizen employeeToHire){
+		employees.add(employeeToHire);
+		employeeToHire.setIsEmployed(true);
+	}
+	
 	public void hire(List<Citizen> employeesToHire){
 		employees.addAll(employeesToHire);
 	}

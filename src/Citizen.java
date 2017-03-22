@@ -11,13 +11,13 @@ public class Citizen implements Agent{
 	
 	private double laborPerHour = 0;
 	private double laborAvailable = 0;
-	private double maxLaborAvailable = 0;	//A citizen can store x10 of their laborPerHour 
+	private double maxLaborAvailable = 0;	//A citizen can store x2 of their laborPerHour 
 	
 	private boolean isEmployed;
 	
 	public Citizen(City c, double laborPerHour){
 		this.laborPerHour = laborPerHour;
-		this.maxLaborAvailable = laborPerHour * 10;
+		this.maxLaborAvailable = laborPerHour * 2;
 		city = c;
 		pocket = new Storage();
 		
@@ -25,7 +25,7 @@ public class Citizen implements Agent{
 	
 	public Citizen(double laborPerHour){
 		this.laborPerHour = laborPerHour;
-		this.maxLaborAvailable = laborPerHour * 10;
+		this.maxLaborAvailable = laborPerHour * 2;
 		pocket = new Storage();	
 	}
 
@@ -150,6 +150,10 @@ public class Citizen implements Agent{
 
 	public void setPocket(Storage pocket) {
 		this.pocket = pocket;
+	}
+	
+	public void setIsEmployed(boolean employed){
+		this.isEmployed = employed; 
 	}
 	
 	public String toString(){

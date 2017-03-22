@@ -6,12 +6,14 @@ import java.util.List;
 public class Marketplace {
 	protected HashMap<Resources,List<SellOffer>> sellOffers;
 	protected HashMap<Resources,List<BuyOffer>> buyOffers;
+	protected List<JobOffer> offerListings;
 	
 	public Marketplace(){
 		for(Resources r : Resources.values()){
 			sellOffers.put(r,new ArrayList<SellOffer>());
 			buyOffers.put(r,new ArrayList<BuyOffer>());
 		}
+		offerListings = new ArrayList<JobOffer>();
 	}
 	
 	public void postSellOffer(Citizen c, Resources r, int ppResource, int nResources){
@@ -20,6 +22,9 @@ public class Marketplace {
 		while(checkForCompatibleBuy(r,newSo) && !newSo.checkIfFilled()){
 			newSo.fulfillBuy(findHighestBuy(r));
 		}
+		if(newSo.checkIfFilled()){
+			this.removeSell(newSo);
+		}
 	}
 	
 	public void postBuyOffer(Citizen c, Resources r, int ppResource, int nResources){
@@ -27,6 +32,10 @@ public class Marketplace {
 		buyOffers.get(r).add(newBo);
 		while(checkForCompatibleSell(r,newBo) && !newBo.checkIfFilled()){
 			newBo.fulfillSell(findLowestSale(r));
+		}
+		
+		if(newBo.checkIfFilled()){
+			this.removeBuy(newBo);
 		}
 	}
 
@@ -118,5 +127,14 @@ public class Marketplace {
 		}
 		
 		return returnOffer;
+	}
+	
+	public void removeBuy(BuyOffer buyToRemove){
+		buyOffers.get(buyToRemove.getResourceToBuy()).remove(buyOffers.get(buyToRemove.getResourceToBuy()).indexOf(buyToRemove));
+				
+	}
+	
+	public void removeSell(SellOffer sellToRemove){
+		buyOffers.get(sellToRemove.getResourceToSell()).remove(buyOffers.get(sellToRemove.getResourceToSell()).indexOf(sellToRemove));
 	}
 }

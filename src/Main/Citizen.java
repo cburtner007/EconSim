@@ -4,79 +4,174 @@ import java.util.Random;
 
 public class Citizen implements Agent{
 	
+	public static int TIME_PER_MEAL = 8;
+	
 	private City city;
 	
-	private int foodProduce;
-	private double chanceToProduce;
+	private Storage pocket;
 	
-	private int foodConsume;
-	private boolean hasConsumed;
+	private int gold = 0;
 	
-	private int health;
-	private int maxHealth;
+	private double laborPerHour = 0;
+	private double laborAvailable = 0;
+	private double maxLaborAvailable = 0;	//A citizen can store x2 of their laborPerHour 
 	
-	private boolean isKill;
+	private int lastMealTime = 0;
 	
-	public Citizen(City c, int[] produceRange, double[] chanceRange, int[] consumeRange, int[] healthRange){
-		foodProduce = World.random.nextInt(produceRange[1] - produceRange[0] + 1) + produceRange[0];
-		
-		chanceToProduce =chanceRange[0] + World.random.nextDouble() * (chanceRange[1] - chanceRange[0]);	//min + Math.random() * (max - min)
-				
-		foodConsume = World.random.nextInt(consumeRange[1] - consumeRange[0] + 1) + consumeRange[0];
-		
-		maxHealth = World.random.nextInt(healthRange[1] - healthRange[0] + 1) + healthRange[0];
-		health = maxHealth;		
-		
+	private boolean isEmployed;
+	
+	public Citizen(City c, double laborPerHour){
+		this.laborPerHour = laborPerHour;
+		this.maxLaborAvailable = laborPerHour * 2;
 		city = c;
+		pocket = new Storage();
 		
-		isKill = false; 
 	}
 	
+	public Citizen(double laborPerHour){
+		this.laborPerHour = laborPerHour;
+		this.maxLaborAvailable = laborPerHour * 2;
+		pocket = new Storage();	
+	}
+
 	@Override
 	public void tick() {
-		// TODO Auto-generated method stub
-		
+		accrueLabor();
 	}
 	
-	public void produce(){
-		if(Math.random() < chanceToProduce){
-			//city.addFood(foodProduce);
-		}
-	}
-	
-	public void consume(){
-		//hasConsumed = city.giveFood(foodConsume);	//Has consumed will be set to "true" if citizen gets his fill
+	public int drainLabor(int requestedLabor){
+		int amountToReturn = 0; 
 		
-		if(hasConsumed){
-			health = maxHealth;
+		if(requestedLabor >  this.laborAvailable){
+			amountToReturn = 0;
 		}else{
-			health--;
+			amountToReturn = requestedLabor;
 		}
 		
-		if(health == 0){
-			isKill = true; 
+		laborAvailable = laborAvailable - amountToReturn;
+		
+		return amountToReturn;
+	}
+	
+	public int buyResource(SellOffer so, int amountToBuy){
+		int ppR = so.getPricePerResource();
+		int finalBuy = amountToBuy;
+		
+		if(so.getResourcesLeftToSell() < finalBuy){
+			finalBuy = so.getResourcesLeftToSell();
+		}
+		
+		int amountBought = so.buyFromSeller(finalBuy);
+		int amountToPay = amountBought * ppR;
+		this.gold = this.gold - amountToPay;
+
+		pocket.addInput(so.getResourceToSell(), amountBought);
+		
+		return amountBought;
+	}
+	
+	public int sellResource(BuyOffer bo, int amountToSell){
+		int finalSell = amountToSell;
+		
+		if(bo.getResourcesLeftToBuy() < finalSell){
+			finalSell = bo.getResourcesLeftToBuy();
+		}
+		this.gold = this.gold + bo.sellToBuyer(finalSell);
+		this.pocket.takeOutput(bo.getResourceToBuy(), finalSell);
+		return finalSell;
+	}
+	
+	public void receiveResource(Resources rToReceive, int amount){
+		pocket.addInput(rToReceive, amount);
+	}
+	
+	public void pay(int goldToPay){
+		this.gold += goldToPay;
+	}
+	
+	public int takeGold(int goldToTake){
+		int finalTake = goldToTake;
+		if(gold - finalTake < 0){
+			finalTake = gold;
+			gold = 0;
+		}else{
+			gold = gold - finalTake;	
+		}
+		
+		return finalTake;
+	}
+	
+	//Add labor to available pool, up to the max
+	private void accrueLabor(){
+		this.laborAvailable += this.laborPerHour;
+		if(this.laborAvailable > this.maxLaborAvailable){
+			this.laborAvailable = this.maxLaborAvailable;
 		}
 	}
 	
-	public boolean isDead(){
-		return isKill;
+	private int eatFood(){
+		return this.pocket.takeInput(Resources.WHEAT, 1);
+	}
+	
+	public Storage getPocket(){
+		return pocket;
+	}
+		
+	public City getCity() {
+		return city;
+	}
+
+	public void setCity(City city) {
+		this.city = city;
+	}
+
+	public int getGold() {
+		return gold;
+	}
+
+	public void setGold(int gold) {
+		this.gold = gold;
+	}
+
+	public double getLaborPerHour() {
+		return laborPerHour;
+	}
+
+	public void setLaborPerHour(double laborPerHour) {
+		this.laborPerHour = laborPerHour;
+	}
+
+	public double getLaborAvailable() {
+		return laborAvailable;
+	}
+
+	public void setLaborAvailable(double laborAvailable) {
+		this.laborAvailable = laborAvailable;
+	}
+
+	public double getMaxLaborAvailable() {
+		return maxLaborAvailable;
+	}
+
+	public void setMaxLaborAvailable(double maxLaborAvailable) {
+		this.maxLaborAvailable = maxLaborAvailable;
+	}
+
+	public void setPocket(Storage pocket) {
+		this.pocket = pocket;
+	}
+	
+	public void setIsEmployed(boolean employed){
+		this.isEmployed = employed; 
 	}
 	
 	public String toString(){
-		String returnString ="";
+		String returnString ="CITIZEN \n";
 		
-		returnString += "			Amount of Food to Produce - " + foodProduce + "\n";
-		returnString += "			Chance to Produce - " + chanceToProduce + "\n";
-		returnString += "			Amount to Consume - " + foodConsume + "\n";
-		returnString += "			Current Health - " + health + "\n";
-		returnString += "			Max Health - " + maxHealth + "\n";
-		returnString += "			Has Eaten - " + hasConsumed + "\n";
+		returnString += "			Gold in Pocket - " + gold + "\n";
 		
 		return returnString;
 	}
-	
-	public int getFoodConsume(){
-		return foodConsume;
-	}
+
 
 }

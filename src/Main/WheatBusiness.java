@@ -1,25 +1,22 @@
 package Main;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
-import enums.Resources;
 
 public class WheatBusiness extends Business {
 	final static Resources[] INPUT_TYPES = {Resources.TOOLS};
-	final static Resources[] OUTPUT_TYPES = {Resources.WHEAT}; 
-	final static int MAX_WORKERS = 100;
-	public final static int SQUARE_FOOTAGE = 1000;	//Guuuhh, publiiiicc?
-	final static int TICKS_TO_PRODUCE = 10;
-	final static int INITIAL_STORE_CAPACITY = 600; 
-	
-	private City theCity; 
+	final static Resources[] OUTPUT_TYPES = {Resources.WHEAT};
 	
 	public WheatBusiness(){
-		super(INPUT_TYPES, OUTPUT_TYPES, SQUARE_FOOTAGE, TICKS_TO_PRODUCE,INITIAL_STORE_CAPACITY);
-		maxWorkerCount = MAX_WORKERS;
-	}
-	public WheatBusiness(City city){
-		super(INPUT_TYPES, OUTPUT_TYPES, SQUARE_FOOTAGE, TICKS_TO_PRODUCE, INITIAL_STORE_CAPACITY);
-		maxWorkerCount = MAX_WORKERS;
-		theCity = city; 
+		super(INPUT_TYPES, OUTPUT_TYPES);
+		maxLaborPerHour = 5;
+		inputPerLabor = new HashMap<Resources,Integer>();
+		inputPerLabor.put(Resources.TOOLS, 1);
+		outputPerLabor = new HashMap<Resources,Integer>();
+		outputPerLabor.put(Resources.WHEAT, 4);
+		gold = 0;
+		employees = new ArrayList<Citizen>();
 	}
 	
 	//Test Method
@@ -27,34 +24,32 @@ public class WheatBusiness extends Business {
 		warehouse.addInput(Resources.TOOLS, amount);
 	}
 	
-	public int hire(int workerNumber){
-		int numberHired = 0;
-		if(workerNumber + currentWorkerCount <= maxWorkerCount){
-			currentWorkerCount += workerNumber;	
-			numberHired = workerNumber; 
-		}else{
-			numberHired = maxWorkerCount - currentWorkerCount;
-			currentWorkerCount = maxWorkerCount;
-		}
+	public String toString(){
+		String returnString ="WHEAT BUSINESS";
+		returnString += "\n";
+		returnString += "			Amount of WHEAT produced - " + warehouse.checkOutputResource(Resources.WHEAT) + "\n";
+		returnString += "			TOOLS left - " + warehouse.checkInputResource(Resources.TOOLS) + "\n";
+		returnString += "			Gold left - " + gold + "\n";
 		
-		return numberHired;
-	}
-	
-	public void produce(){
-		int amountProduced = warehouse.takeInput(Resources.TOOLS, currentWorkerCount)*2;
-		warehouse.addOutput(Resources.WHEAT, amountProduced);
-	}
-	
-	public void tick(){
-		this.produce();
+		return returnString;
 	}
 	
 	public static void main(String[] args) {
 		WheatBusiness testBusiness = new WheatBusiness();
-		testBusiness.hire(150);
+		ArrayList<Citizen> peepsToEmploy = new ArrayList<Citizen>();
+		for(int i = 0 ; i < 5 ; i++){
+			peepsToEmploy.add(new Citizen(1.0));
+		}
+		testBusiness.addGold(1000);
+		testBusiness.setGoldPerLabor(1);
+		testBusiness.addInput(100);
+		testBusiness.hire(peepsToEmploy);
 		for(int i = 0 ; i <= 100 ; i++){
+			for(Citizen c : peepsToEmploy){
+				c.tick();
+			}
 			testBusiness.tick();
-			testBusiness.addInput(100);
+			System.out.println(testBusiness.toString());
 		}
 	}
 

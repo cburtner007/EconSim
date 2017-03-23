@@ -1,50 +1,41 @@
+package Main;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
-public class GoldBusiness extends Business {
-	final static Resources[] INPUT_TYPES = {Resources.TOOLS};
-	final static Resources[] OUTPUT_TYPES = {};
-	final static int GOLD_PER_TOOL = 15;
+public class ToolBusiness extends Business {
+	final static Resources[] INPUT_TYPES = {};
+	final static Resources[] OUTPUT_TYPES = {Resources.TOOLS};
 	
-	public GoldBusiness(){
+	public ToolBusiness(){
 		super(INPUT_TYPES, OUTPUT_TYPES);
-		maxLaborPerHour = 5;
+		maxLaborPerHour = 3;
 		inputPerLabor = new HashMap<Resources,Integer>();
-		inputPerLabor.put(Resources.TOOLS, 1);
+		//inputPerLabor.put(Resources.TOOLS, 1);
 		outputPerLabor = new HashMap<Resources,Integer>();
+		outputPerLabor.put(Resources.TOOLS, 1);
 		gold = 0;
 		employees = new ArrayList<Citizen>();
 	}
 	
 	//Test Method
 	public void addInput(int amount){
-		warehouse.addInput(Resources.TOOLS, amount);
-	}
-	
-	public void produce(){
-		int toolsBefore = warehouse.checkInputResource(Resources.TOOLS);
-		super.produce();	//super.produce() will use our input resources for us, but gold production is a special case so we handle it here
-		int toolsAfter = warehouse.checkInputResource(Resources.TOOLS);
-		
-		gold = gold + (toolsBefore - toolsAfter) * GOLD_PER_TOOL;
-	}
-	
-	public void tick(){
-		this.produce();
+		//warehouse.addInput(Resources.TOOLS, amount);
 	}
 	
 	public String toString(){
-		String returnString ="GOLD BUSINESS";
+		String returnString ="TOOL BUSINESS";
 		returnString += "\n";
+		returnString += "			Amount of TOOLS produced - " + warehouse.checkOutputResource(Resources.TOOLS) + "\n";
+		//returnString += "			TOOLS left - " + warehouse.checkInputResource(Resources.TOOLS) + "\n";
 		returnString += "			Gold left - " + gold + "\n";
 		
 		return returnString;
 	}
 	
 	public static void main(String[] args) {
-		GoldBusiness testBusiness = new GoldBusiness();
+		ToolBusiness testBusiness = new ToolBusiness();
 		ArrayList<Citizen> peepsToEmploy = new ArrayList<Citizen>();
 		for(int i = 0 ; i < 5 ; i++){
 			peepsToEmploy.add(new Citizen(1.0));

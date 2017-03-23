@@ -1,19 +1,20 @@
+package Main;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 
-public class WheatBusiness extends Business {
+public class GoldBusiness extends Business {
 	final static Resources[] INPUT_TYPES = {Resources.TOOLS};
-	final static Resources[] OUTPUT_TYPES = {Resources.WHEAT};
+	final static Resources[] OUTPUT_TYPES = {};
+	final static int GOLD_PER_TOOL = 15;
 	
-	public WheatBusiness(){
+	public GoldBusiness(){
 		super(INPUT_TYPES, OUTPUT_TYPES);
 		maxLaborPerHour = 5;
 		inputPerLabor = new HashMap<Resources,Integer>();
 		inputPerLabor.put(Resources.TOOLS, 1);
 		outputPerLabor = new HashMap<Resources,Integer>();
-		outputPerLabor.put(Resources.WHEAT, 4);
 		gold = 0;
 		employees = new ArrayList<Citizen>();
 	}
@@ -23,18 +24,28 @@ public class WheatBusiness extends Business {
 		warehouse.addInput(Resources.TOOLS, amount);
 	}
 	
+	public void produce(){
+		int toolsBefore = warehouse.checkInputResource(Resources.TOOLS);
+		super.produce();	//super.produce() will use our input resources for us, but gold production is a special case so we handle it here
+		int toolsAfter = warehouse.checkInputResource(Resources.TOOLS);
+		
+		gold = gold + (toolsBefore - toolsAfter) * GOLD_PER_TOOL;
+	}
+	
+	public void tick(){
+		this.produce();
+	}
+	
 	public String toString(){
-		String returnString ="WHEAT BUSINESS";
+		String returnString ="GOLD BUSINESS";
 		returnString += "\n";
-		returnString += "			Amount of WHEAT produced - " + warehouse.checkOutputResource(Resources.WHEAT) + "\n";
-		returnString += "			TOOLS left - " + warehouse.checkInputResource(Resources.TOOLS) + "\n";
 		returnString += "			Gold left - " + gold + "\n";
 		
 		return returnString;
 	}
 	
 	public static void main(String[] args) {
-		WheatBusiness testBusiness = new WheatBusiness();
+		GoldBusiness testBusiness = new GoldBusiness();
 		ArrayList<Citizen> peepsToEmploy = new ArrayList<Citizen>();
 		for(int i = 0 ; i < 5 ; i++){
 			peepsToEmploy.add(new Citizen(1.0));

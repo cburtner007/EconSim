@@ -11,10 +11,10 @@ public class CityBrain {
 	
 	public boolean startWheatBusiness(){
 		boolean returnFlag = false;
-		if(cityReference.getUnemployedCitizens() > 0 && 
+		/*if(cityReference.getUnemployedCitizens() > 0 && 
 				(cityReference.getAvailableSquareFeet() - WheatBusiness.SQUARE_FOOTAGE) >= 0){
 			returnFlag = true; 
-		}
+		}*/
 		return returnFlag; 
 	}
 }

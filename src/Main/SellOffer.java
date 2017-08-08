@@ -1,5 +1,7 @@
 package Main;
 
+import enums.Resources;
+
 public class SellOffer {
 	private Resources resourceToSell;
 	private Citizen seller;

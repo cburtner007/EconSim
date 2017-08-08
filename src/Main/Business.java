@@ -2,6 +2,8 @@ package Main;
 import java.util.HashMap;
 import java.util.List;
 
+import enums.Resources;
+
 
 public class Business implements Agent {
 	protected Storage warehouse;

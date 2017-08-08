@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import enums.Resources;
+
 
 public class WheatBusiness extends Business {
 	final static Resources[] INPUT_TYPES = {Resources.TOOLS};

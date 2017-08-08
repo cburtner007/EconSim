@@ -3,6 +3,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import enums.Resources;
+
 
 public class Marketplace {
 	protected HashMap<Resources,List<SellOffer>> sellOffers;

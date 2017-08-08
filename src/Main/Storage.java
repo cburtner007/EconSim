@@ -2,6 +2,8 @@ package Main;
 import java.util.HashMap;
 import java.util.Map;
 
+import enums.Resources;
+
 public class Storage {
 	//Do we need both input and output? We could put everything in one. This was silly to do
 	HashMap<Resources,Integer> input;

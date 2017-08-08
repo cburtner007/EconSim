@@ -1,5 +1,6 @@
 package Main;
 import java.util.Random;
+import enums.Resources;
 
 
 public class Citizen implements Agent{

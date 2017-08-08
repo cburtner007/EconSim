@@ -1,6 +1,6 @@
 package Main;
 import java.util.ArrayList;
-
+import enums.Resources;
 
 public class BuyOffer {
 	private Resources resourceToBuy;

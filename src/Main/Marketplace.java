@@ -3,27 +3,50 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+
 import enums.Resources;
 
 
 public class Marketplace {
 	protected HashMap<Resources,List<SellOffer>> sellOffers;
 	protected HashMap<Resources,List<BuyOffer>> buyOffers;
+	
+	private HashMap<Resources, SummaryStatistics> transactionStats;
+	
 	protected List<JobOffer> offerListings;
 	
 	public Marketplace(){
+		transactionStats = new HashMap<Resources, SummaryStatistics>();
+		sellOffers = new HashMap<Resources,List<SellOffer>>();
+		buyOffers = new HashMap<Resources,List<BuyOffer>>();
 		for(Resources r : Resources.values()){
 			sellOffers.put(r,new ArrayList<SellOffer>());
 			buyOffers.put(r,new ArrayList<BuyOffer>());
+			transactionStats.put(r,  new SummaryStatistics());
+			
 		}
 		offerListings = new ArrayList<JobOffer>();
 	}
 	
-	public void postSellOffer(Citizen c, Resources r, int ppResource, int nResources){
+	public void postSellOfer(Citizen c, Resources r, int ppResource, int nResources){
 		SellOffer newSo = new SellOffer(r, c, ppResource, nResources);
-		sellOffers.get(r).add(newSo);
+		this.postSellOffer(newSo);
+	}
+	public void postSellOffer(SellOffer newSo){
+		Resources r = newSo.getResourceToSell();
+		sellOffers.get(r).add(newSo);	
 		while(checkForCompatibleBuy(r,newSo) && !newSo.checkIfFilled()){
-			newSo.fulfillBuy(findHighestBuy(r));
+			BuyOffer highestBuy = findHighestBuy(r);
+			int amountSold = newSo.fulfill(highestBuy);//If there's a compatible buy, then the most eligible will always be the highest buy
+			
+			if(highestBuy.checkIfFilled()){
+				this.removeBuy(highestBuy);
+			}
+			
+			for(int i = 0; i < amountSold; i++){
+				transactionStats.get(r).addValue(highestBuy.getPricePerResource());
+			}
 		}
 		if(newSo.checkIfFilled()){
 			this.removeSell(newSo);
@@ -32,11 +55,24 @@ public class Marketplace {
 	
 	public void postBuyOffer(Citizen c, Resources r, int ppResource, int nResources){
 		BuyOffer newBo = new BuyOffer(r, c, ppResource, nResources);
+		this.postBuyOffer(newBo);
+	}
+	
+	public void postBuyOffer(BuyOffer newBo){
+		Resources r = newBo.getResourceToBuy();
 		buyOffers.get(r).add(newBo);
 		while(checkForCompatibleSell(r,newBo) && !newBo.checkIfFilled()){
-			newBo.fulfillSell(findLowestSale(r));
-		}
-		
+			SellOffer lowestSale = findLowestSale(r);
+			int amountBought = newBo.fulfill(lowestSale);
+			
+			if(lowestSale.checkIfFilled()){
+				this.removeSell(lowestSale);
+			}
+			
+			for(int i = 0; i < amountBought; i++){
+				transactionStats.get(r).addValue(lowestSale.getPricePerResource());
+			}
+		}		
 		if(newBo.checkIfFilled()){
 			this.removeBuy(newBo);
 		}
@@ -45,7 +81,7 @@ public class Marketplace {
 	public boolean checkForCompatibleBuy(Resources r, SellOffer so){
 		boolean returnFlag = false;
 		BuyOffer bo = this.findHighestBuy(r);
-		if(bo.getPricePerResource() > so.getPricePerResource()){
+		if(bo != null && so != null && bo.getPricePerResource() > so.getPricePerResource()){
 			returnFlag = true;
 		}
 		return returnFlag;
@@ -54,7 +90,7 @@ public class Marketplace {
 	public boolean checkForCompatibleSell(Resources r, BuyOffer bo){
 		boolean returnFlag = false;
 		SellOffer so = this.findLowestSale(r);
-		if(so.getPricePerResource() < bo.getPricePerResource()){
+		if(so != null && bo != null && so.getPricePerResource() < bo.getPricePerResource()){
 			returnFlag = true;
 		}
 		
@@ -138,6 +174,48 @@ public class Marketplace {
 	}
 	
 	public void removeSell(SellOffer sellToRemove){
-		buyOffers.get(sellToRemove.getResourceToSell()).remove(buyOffers.get(sellToRemove.getResourceToSell()).indexOf(sellToRemove));
+		sellOffers.get(sellToRemove.getResourceToSell()).remove(sellOffers.get(sellToRemove.getResourceToSell()).indexOf(sellToRemove));
+	}
+	
+	public List<SellOffer> getSellOffersForResource(Resources rType){
+		return sellOffers.get(rType);
+	}
+	public List<BuyOffer> getBuyOffersForResource(Resources rType){
+		return buyOffers.get(rType);
+	}
+	
+	public SummaryStatistics getStatsForResource(Resources r){
+		return transactionStats.get(r);
+	}
+	
+	public static void main(String[] args){
+		//Test existing buy
+		Marketplace testMP = new Marketplace();
+		
+		Citizen buyMaker = new Citizen(1.0);
+		buyMaker.setGold(500);
+		System.out.println("buyer - " + buyMaker.toString());
+		BuyOffer bo = new BuyOffer(Resources.WHEAT,buyMaker,10,15);
+		System.out.println("buyer after offer - " + buyMaker.toString());
+		testMP.postBuyOffer(bo);
+		
+		Citizen sellMaker1 = new Citizen(1.0);
+		Citizen sellMaker2 = new Citizen(1.0);
+		sellMaker1.getPocket().addOutput(Resources.WHEAT, 8);
+		sellMaker2.getPocket().addOutput(Resources.WHEAT, 15);
+		SellOffer so1 = new SellOffer(Resources.WHEAT, sellMaker1, 5, 8);
+		SellOffer so2 = new SellOffer(Resources.WHEAT, sellMaker2, 9, 15);
+		
+		System.out.println("buy taker before sale- " + sellMaker1.toString());
+		//sellMaker1.sellResource(bo, 8);
+		testMP.postSellOffer(so1);
+		System.out.println("buy taker after sale- " + sellMaker1.toString());
+		System.out.println("buy taker2 before sale- " + sellMaker2.toString());
+		//sellMaker2.sellResource(bo, 15);
+		testMP.postSellOffer(so2);
+		System.out.println("buy taker2 after sale- " + sellMaker2.toString());
+		
+		System.out.println("N is: " + testMP.getStatsForResource(Resources.WHEAT).getN());
+		System.out.println("Sum is: " + testMP.getStatsForResource(Resources.WHEAT).getSum());
 	}
 }

@@ -9,6 +9,10 @@ public class BuyOffer {
 	private int resourcesLeftToBuy;
 	private int goldOnOffer;
 	
+	public BuyOffer(){
+		
+	}
+	
 	public BuyOffer(Resources rToBuy, Citizen b, int ppResource, int nToBuy){
 		resourceToBuy = rToBuy;
 		buyer = b;
@@ -17,29 +21,35 @@ public class BuyOffer {
 		resourcesLeftToBuy = nToBuy;
 	}
 	
-	public void fulfillSell(SellOffer so){
+	public int fulfill(SellOffer so){
+		int amountBought = 0;
 		if(so.getPricePerResource() > this.pricePerResource){
 			//We want to buy for this this price or lower. If their offer is higher than this price, don't bother
 		}else{
-			resourcesLeftToBuy = resourcesLeftToBuy - this.buyer.buyResource(so, resourcesLeftToBuy);
+			amountBought = so.sell(resourcesLeftToBuy);
+			int amountSpent = so.getPricePerResource() * amountBought;
+			this.goldOnOffer = this.goldOnOffer - amountSpent;	//Hopefully not negative LUL
+			resourcesLeftToBuy = resourcesLeftToBuy - amountBought;
 		}
+		buyer.getPocket().addInput(resourceToBuy, amountBought);
+		return amountBought;
 	}
 
-	public int sellToBuyer(int amountToSell){
+	public int buy(int amountToSell){
 		int finalGoldTake = 0;//amountToSell * pricePerResource;
-		int finalAmountToSell = amountToSell;
+		int amountSold = amountToSell;
 		
-		if(resourcesLeftToBuy < finalAmountToSell){
-			finalAmountToSell = resourcesLeftToBuy;
+		if(resourcesLeftToBuy < amountSold){
+			amountSold = resourcesLeftToBuy;
 			resourcesLeftToBuy = 0;
 		}else{
-			resourcesLeftToBuy = resourcesLeftToBuy - finalAmountToSell;	
+			resourcesLeftToBuy = resourcesLeftToBuy - amountSold;	
 		}
-		buyer.receiveResource(resourceToBuy, finalAmountToSell);
-		finalGoldTake = finalAmountToSell * pricePerResource;
+		buyer.receiveResource(resourceToBuy, amountSold);
+		finalGoldTake = amountSold * pricePerResource;
 		goldOnOffer = goldOnOffer - finalGoldTake;
 		
-		return finalGoldTake;
+		return amountSold;
 	}
 	
 	public boolean checkIfFilled(){

@@ -1,5 +1,7 @@
 package Main;
 import java.util.Random;
+
+import behaviors.CitizenBrain;
 import enums.Resources;
 
 
@@ -11,6 +13,8 @@ public class Citizen implements Agent{
 	
 	private Storage pocket;
 	
+	private CitizenBrain brain;
+	
 	private int gold = 0;
 	
 	private double laborPerHour = 0;
@@ -18,15 +22,17 @@ public class Citizen implements Agent{
 	private double maxLaborAvailable = 0;	//A citizen can store x2 of their laborPerHour 
 	
 	private int lastMealTime = 0;
+	private int damageTaken = 0;
 	
 	private boolean isEmployed;
+	private boolean isDead = false;
 	
 	public Citizen(City c, double laborPerHour){
 		this.laborPerHour = laborPerHour;
 		this.maxLaborAvailable = laborPerHour * 2;
 		city = c;
 		pocket = new Storage();
-		
+		brain = new CitizenBrain(this);
 	}
 	
 	public Citizen(double laborPerHour){
@@ -38,6 +44,17 @@ public class Citizen implements Agent{
 	@Override
 	public void tick() {
 		accrueLabor();
+		brain.behave();
+		if(lastMealTime > 8){
+			int foodEaten = this.eatFood();
+			if(foodEaten == 0){
+				damageTaken++;
+				if(damageTaken > 2){
+					isDead = true;
+					//IDK, but gotta do something here
+				}
+			}
+		}
 	}
 	
 	public int drainLabor(int requestedLabor){
@@ -62,7 +79,7 @@ public class Citizen implements Agent{
 			finalBuy = so.getResourcesLeftToSell();
 		}
 		
-		int amountBought = so.buyFromSeller(finalBuy);
+		int amountBought = so.sell(finalBuy);
 		int amountToPay = amountBought * ppR;
 		this.gold = this.gold - amountToPay;
 
@@ -77,9 +94,11 @@ public class Citizen implements Agent{
 		if(bo.getResourcesLeftToBuy() < finalSell){
 			finalSell = bo.getResourcesLeftToBuy();
 		}
-		this.gold = this.gold + bo.sellToBuyer(finalSell);
+		int amountSold = bo.buy(finalSell);
+		this.gold = this.gold + amountSold * bo.getPricePerResource();
 		this.pocket.takeOutput(bo.getResourceToBuy(), finalSell);
-		return finalSell;
+		
+		return amountSold;
 	}
 	
 	public void receiveResource(Resources rToReceive, int amount){
@@ -165,7 +184,20 @@ public class Citizen implements Agent{
 	public void setIsEmployed(boolean employed){
 		this.isEmployed = employed; 
 	}
+		
 	
+	public int getLastMealTime() {
+		return lastMealTime;
+	}
+
+	public void setLastMealTime(int lastMealTime) {
+		this.lastMealTime = lastMealTime;
+	}
+	
+	public Marketplace getCityMarket(){
+		return city.getMarketplace();
+	}
+
 	public String toString(){
 		String returnString ="CITIZEN \n";
 		
@@ -173,6 +205,5 @@ public class Citizen implements Agent{
 		
 		return returnString;
 	}
-
 
 }

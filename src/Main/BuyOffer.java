@@ -60,6 +60,13 @@ public class BuyOffer {
 		}
 	}
 	
+	//Give everything still on the offer back to the maker
+	public void returnOffer(){
+		this.buyer.pay(goldOnOffer);
+		goldOnOffer = 0;
+		resourcesLeftToBuy = 0;
+	}
+	
 	public Resources getResourceToBuy() {
 		return resourceToBuy;
 	}
@@ -86,6 +93,10 @@ public class BuyOffer {
 
 	public int getResourcesLeftToBuy() {
 		return resourcesLeftToBuy;
+	}
+	
+	public int getGoldOnOffer(){
+		return goldOnOffer;
 	}
 
 	public void setResourcesLeftToBuy(int resourcesLeftToBuy) {

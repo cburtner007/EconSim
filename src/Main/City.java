@@ -23,3 +23,9 @@ public class City implements Agent{
 		return marketplace;
 	}
 }
+
+/*
+ * I should do a test with just citizens to see if they fill up the marketplace with buys
+ * 
+ * I need to implement job searching and job offer placing and design how a citizen runs a business (add a brain to the citizen brain?)
+ */

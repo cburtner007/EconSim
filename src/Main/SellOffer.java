@@ -60,6 +60,11 @@ public class SellOffer {
 		}
 	}
 	
+	public void returnOffer(){
+		this.seller.receiveResource(resourceToSell, resourcesLeftToSell);
+		resourcesLeftToSell = 0;
+	}
+	
 	public Resources getResourceToSell() {
 		return resourceToSell;
 	}

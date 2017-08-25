@@ -12,7 +12,7 @@ public class CitizenBrain extends Brain {
 	private int needFoodLevel = 0;	//0 = No need, 1 = Some Need, 2 = Much Need, 3 = Desperate
 	private SummaryStatistics foodSellStats;
 	
-	private BuyOffer standingOffer;
+	private BuyOffer standingOffer = null;
 	
 	public CitizenBrain(Citizen c){
 		this.cRef = c;
@@ -22,7 +22,8 @@ public class CitizenBrain extends Brain {
 	@Override
 	public void behave() {
 		// TODO Auto-generated method stub
-		
+		decideFoodNeed();
+		setBuyFoodOffer();
 	}
 	
 	private void decideFoodNeed(){
@@ -43,12 +44,18 @@ public class CitizenBrain extends Brain {
 		}
 	}
 	
-	private BuyOffer makeBuyFoodOffer(){
+	//This will set the standingOffer based on all the logic you can imagine
+	private BuyOffer setBuyFoodOffer(){	
+		if(standingOffer != null){
+			standingOffer.returnOffer();
+		}
+		
 		BuyOffer bo = new BuyOffer();
 		bo.setResourceToBuy(Resources.WHEAT);
 		bo.setResourcesLeftToBuy(1);
+		
 		if(foodSellStats.getN() > 0){
-			double currentGold = this.cRef.getGold();
+			double currentGold = this.cRef.getGold();	
 			//Should use factory + strategy pattern
 			switch(needFoodLevel){
 				case 0:
@@ -74,10 +81,11 @@ public class CitizenBrain extends Brain {
 			
 			}
 		}else{
-			//Base price is 4 gold per wheat (a tool is basically always worth 15 gold
+			//Base price is 4 gold per wheat (a tool is basically always worth 15 gold and 1 tool = 4 Wheat)
 			bo.setPricePerResource(4);
 		}
 		
+		standingOffer = bo;
 		return bo;
 	}
 

@@ -26,4 +26,12 @@ public class JobOffer {
 		}
 		return returnFlag;
 	}
+	
+	public int getPricePerLabor(){
+		return pricePerLabor;
+	}
+	
+	public Business getBusinessHiring(){
+		return businessHiring;
+	}
 }

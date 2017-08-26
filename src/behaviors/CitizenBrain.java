@@ -2,8 +2,10 @@ package behaviors;
 
 import enums.Resources;
 import Main.Citizen;
+import Main.JobOffer;
 import Main.SellOffer;
 import Main.BuyOffer;
+
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 
@@ -13,6 +15,8 @@ public class CitizenBrain extends Brain {
 	private SummaryStatistics foodSellStats;
 	
 	private BuyOffer standingOffer = null;
+	
+	private boolean needsNewJob = false;
 	
 	public CitizenBrain(Citizen c){
 		this.cRef = c;
@@ -24,6 +28,35 @@ public class CitizenBrain extends Brain {
 		// TODO Auto-generated method stub
 		decideFoodNeed();
 		setBuyFoodOffer();
+		
+		decideJobNeed();
+		getBetterJob();
+	}
+	
+	private void decideJobNeed() {
+		if(this.cRef.getIsEmployed()){
+			needsNewJob = true;
+		} else if(!canAffordFood()){
+			needsNewJob = true;
+		}
+		
+	}
+
+	private boolean canAffordFood(){
+		double wheatCost = cRef.getCityMarket().getStatsForResource(Resources.WHEAT).getMean();
+		if (wheatCost > cRef.getEmployer().getGoldPerLabor() * 8){
+			return false;
+		}
+		return true;
+	}
+	
+	private void getBetterJob(){
+		if(needsNewJob){
+			JobOffer jo = this.cRef.getCityMarket().findBestJobOffer();
+			if(jo.getPricePerLabor() > cRef.getEmployer().getGoldPerLabor()){
+				cRef.takeJob(jo);
+			}
+		}
 	}
 	
 	private void decideFoodNeed(){

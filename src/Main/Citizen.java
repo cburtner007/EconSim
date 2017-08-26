@@ -24,7 +24,8 @@ public class Citizen implements Agent{
 	private int lastMealTime = 0;
 	private int damageTaken = 0;
 	
-	private boolean isEmployed;
+	private Business employer;
+	private boolean isEmployed = false;
 	private boolean isDead = false;
 	
 	public Citizen(City c, double laborPerHour){
@@ -55,6 +56,18 @@ public class Citizen implements Agent{
 				}
 			}
 		}
+	}
+	
+	public void quitJob(){
+		this.employer.removeEmployee(this);
+		employer = null;
+		isEmployed = false;
+	}
+	
+	public void takeJob(JobOffer jo){
+		jo.takeApplicant(this);
+		employer = jo.getBusinessHiring();
+		isEmployed = true;
 	}
 	
 	public int drainLabor(int requestedLabor){
@@ -205,5 +218,27 @@ public class Citizen implements Agent{
 		
 		return returnString;
 	}
+
+	public boolean getIsEmployed() {
+		return this.isEmployed;
+	}
+
+	public Business getEmployer() {
+		return employer;
+	}
+
+	public void setEmployer(Business employer) {
+		this.employer = employer;
+	}
+
+	public boolean isDead() {
+		return isDead;
+	}
+
+	public void setDead(boolean isDead) {
+		this.isDead = isDead;
+	}
+	
+	
 
 }

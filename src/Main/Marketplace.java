@@ -29,6 +29,11 @@ public class Marketplace {
 		offerListings = new ArrayList<JobOffer>();
 	}
 	
+	public void postJobOffer(JobOffer jo)
+	{
+		offerListings.add(jo);
+	}
+	
 	public void postSellOfer(Citizen c, Resources r, int ppResource, int nResources){
 		SellOffer newSo = new SellOffer(r, c, ppResource, nResources);
 		this.postSellOffer(newSo);
@@ -95,6 +100,20 @@ public class Marketplace {
 		}
 		
 		return returnFlag;
+	}
+	
+	public JobOffer findBestJobOffer()
+	{
+		JobOffer returnOffer = null;
+		for(JobOffer jo : offerListings){
+			if (returnOffer == null){
+				returnOffer = jo;
+			} else if (jo.getPricePerLabor() > returnOffer.getPricePerLabor()){
+				returnOffer = jo;
+			}
+		}
+		
+		return returnOffer;
 	}
 	
 	//There really isn't that much difference between a "Sell" and a "Buy" both are offers. 

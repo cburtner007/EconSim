@@ -87,6 +87,14 @@ public class Business implements Agent {
 		return returnFlag;
 	}
 	
+	public boolean removeEmployee(Citizen emp){
+		boolean returnFlag = true;
+		
+		returnFlag = this.employees.remove(emp);
+		
+		return returnFlag;
+	}
+	
 	public void addGold(int g){
 		this.gold += g;
 	}

@@ -3,7 +3,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 
 import enums.Resources;
 
@@ -12,24 +13,24 @@ public class Marketplace {
 	protected HashMap<Resources,List<SellOffer>> sellOffers;
 	protected HashMap<Resources,List<BuyOffer>> buyOffers;
 	
-	private HashMap<Resources, SummaryStatistics> transactionStats;
+	private HashMap<Resources, DescriptiveStatistics> transactionStats;
 	
 	protected List<JobOffer> offerListings;
 	
 	public Marketplace(){
-		transactionStats = new HashMap<Resources, SummaryStatistics>();
+		transactionStats = new HashMap<Resources, DescriptiveStatistics>();
 		sellOffers = new HashMap<Resources,List<SellOffer>>();
 		buyOffers = new HashMap<Resources,List<BuyOffer>>();
 		for(Resources r : Resources.values()){
 			sellOffers.put(r,new ArrayList<SellOffer>());
 			buyOffers.put(r,new ArrayList<BuyOffer>());
-			transactionStats.put(r,  new SummaryStatistics());
+			transactionStats.put(r,  new DescriptiveStatistics(100));	//Window is 100 trades. Trades should only add entries at a fraction of their rate (depending on size of populace)
 			
 		}
 		offerListings = new ArrayList<JobOffer>();
 	}
 	
-	public void postJobOffer(JobOffer jo)
+	public void postJobOffer(JobOffer jo) 
 	{
 		offerListings.add(jo);
 	}
@@ -203,7 +204,7 @@ public class Marketplace {
 		return buyOffers.get(rType);
 	}
 	
-	public SummaryStatistics getStatsForResource(Resources r){
+	public DescriptiveStatistics getStatsForResource(Resources r){
 		return transactionStats.get(r);
 	}
 	

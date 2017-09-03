@@ -43,3 +43,15 @@ Temporary Items
 .apdisk
 *.class
 *.class
+*.version
+*.resources
+*.prefs
+*.xml
+src/.metadata/.plugins/org.eclipse.jdt.core/nonChainingJarsCache
+*.dat
+src/.metadata/.plugins/org.eclipse.jdt.core/invalidArchivesCache
+*.xmi
+*.ini
+.metadata/.plugins/org.eclipse.jdt.core/nonChainingJarsCache
+.metadata/.plugins/org.eclipse.jdt.core/invalidArchivesCache
+*.lock

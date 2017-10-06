@@ -18,7 +18,7 @@ public class GoldBusiness extends Business {
 		inputPerLabor.put(Resources.TOOLS, 1);
 		outputPerLabor = new HashMap<Resources,Integer>();
 		gold = 0;
-		employees = new ArrayList<Citizen>();
+		jobs = new ArrayList<Job>();
 	}
 	
 	//Test Method

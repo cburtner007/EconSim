@@ -44,7 +44,7 @@ public class CitizenBrain extends Brain {
 
 	private boolean canAffordFood(){
 		double wheatCost = cRef.getCityMarket().getStatsForResource(Resources.WHEAT).getMean();
-		if (wheatCost > cRef.getEmployer().getGoldPerLabor() * 8){
+		if (wheatCost > cRef.getJob().getRate() * 8){
 			return false;
 		}
 		return true;
@@ -53,7 +53,7 @@ public class CitizenBrain extends Brain {
 	private void getBetterJob(){
 		if(needsNewJob){
 			JobOffer jo = this.cRef.getCityMarket().findBestJobOffer();
-			if(jo.getPricePerLabor() > cRef.getEmployer().getGoldPerLabor()){
+			if(jo.getPricePerLabor() > cRef.getJob().getRate()){
 				cRef.takeJob(jo);
 			}
 		}

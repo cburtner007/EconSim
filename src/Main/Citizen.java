@@ -24,7 +24,7 @@ public class Citizen implements Agent{
 	private int lastMealTime = 0;
 	private int damageTaken = 0;
 	
-	private Business employer;
+	private Job job; //Reference to their job description. Basically.
 	private boolean isEmployed = false;
 	private boolean isDead = false;
 	
@@ -59,14 +59,12 @@ public class Citizen implements Agent{
 	}
 	
 	public void quitJob(){
-		this.employer.removeEmployee(this);
-		employer = null;
-		isEmployed = false;
+		this.job.terminate();
+		this.job = null;
 	}
 	
 	public void takeJob(JobOffer jo){
 		jo.takeApplicant(this);
-		employer = jo.getBusinessHiring();
 		isEmployed = true;
 	}
 	
@@ -223,12 +221,12 @@ public class Citizen implements Agent{
 		return this.isEmployed;
 	}
 
-	public Business getEmployer() {
-		return employer;
+	public Job getJob() {
+		return job;
 	}
 
-	public void setEmployer(Business employer) {
-		this.employer = employer;
+	public void setJob(Job job) {
+		this.job = job;
 	}
 
 	public boolean isDead() {

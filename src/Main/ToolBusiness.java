@@ -18,7 +18,7 @@ public class ToolBusiness extends Business {
 		outputPerLabor = new HashMap<Resources,Integer>();
 		outputPerLabor.put(Resources.TOOLS, 1);
 		gold = 0;
-		employees = new ArrayList<Citizen>();
+		jobs = new ArrayList<Job>();
 	}
 	
 	//Test Method

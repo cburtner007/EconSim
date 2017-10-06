@@ -16,6 +16,7 @@ public class Marketplace {
 	private HashMap<Resources, DescriptiveStatistics> transactionStats;
 	
 	protected List<JobOffer> offerListings;
+	protected DescriptiveStatistics jobStats;
 	
 	public Marketplace(){
 		transactionStats = new HashMap<Resources, DescriptiveStatistics>();
@@ -28,6 +29,7 @@ public class Marketplace {
 			
 		}
 		offerListings = new ArrayList<JobOffer>();
+		jobStats = new DescriptiveStatistics(100);
 	}
 	
 	public void postJobOffer(JobOffer jo) 
@@ -206,6 +208,10 @@ public class Marketplace {
 	
 	public DescriptiveStatistics getStatsForResource(Resources r){
 		return transactionStats.get(r);
+	}
+	
+	public DescriptiveStatistics getJobStats(){
+		return jobStats;
 	}
 	
 	public static void main(String[] args){

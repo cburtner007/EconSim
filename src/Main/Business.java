@@ -18,18 +18,19 @@ public class Business implements Agent {
 	protected int currentWorkerCount; 
 	protected int maxWorkerCount;
 	
-	protected List<Citizen> employees;
+	protected List<Job> jobs;
 	public Business(Resources[] inResTypes, Resources[] outResTypes){
 		warehouse = new Storage(inResTypes, outResTypes);
 	}
 
-	public void hire(Citizen employeeToHire){
-		employees.add(employeeToHire);
-		employeeToHire.setIsEmployed(true);
+	public void hire(Job employeeToHire){
+		jobs.add(employeeToHire);
 	}
 	
 	public void hire(List<Citizen> employeesToHire){
-		employees.addAll(employeesToHire);
+		for(Citizen c : employeesToHire){
+			jobs.add(new Job(c, goldPerLabor));
+		}
 	}
 	
 	public void produce(){
@@ -53,8 +54,9 @@ public class Business implements Agent {
 				break;
 			}
 			
-			for(Citizen c : employees){
+			for(Job j : jobs){
 				laborProduced = 0;
+				Citizen c = j.getEmployee();	//TODO: We shouldn't need a direct reference to the citizen.
 				
 				//If we have enough resources to pay for an hour of labor
 				if(hasEnoughInput()){
@@ -87,10 +89,10 @@ public class Business implements Agent {
 		return returnFlag;
 	}
 	
-	public boolean removeEmployee(Citizen emp){
+	public boolean removeJob(Job j){
 		boolean returnFlag = true;
 		
-		returnFlag = this.employees.remove(emp);
+		returnFlag = this.jobs.remove(j);
 		
 		return returnFlag;
 	}

@@ -18,7 +18,7 @@ public class WheatBusiness extends Business {
 		outputPerLabor = new HashMap<Resources,Integer>();
 		outputPerLabor.put(Resources.WHEAT, 4);
 		gold = 0;
-		employees = new ArrayList<Citizen>();
+		jobs = new ArrayList<Job>();
 	}
 	
 	//Test Method

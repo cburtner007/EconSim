@@ -1,10 +1,14 @@
 package behaviors;
 
 import Main.Business;
+import Main.Job;
 
 public class BusinessBrain extends Brain{
 	private Business theBusiness;
+	
+	private int rateToHire = 0;
 	private int operatingLevel = 0;
+	private int hiringNeed = 0; // 0 = no need, 1 is some need, 4 is now. 
 	public BusinessBrain(Business b){
 		this.theBusiness = b;
 	}
@@ -16,14 +20,50 @@ public class BusinessBrain extends Brain{
 	}
 	
 	private void setPriceToHire(){
-		
+		if(hiringNeed == 0){
+			rateToHire = 0;
+		}else if(hiringNeed == 1){
+			double stdDev = theBusiness.getCityMarket().getJobStats().getStandardDeviation();
+			double mean = theBusiness.getCityMarket().getJobStats().getMean();
+			rateToHire = (int) (mean - stdDev);
+		}else if(hiringNeed == 2){
+			rateToHire = (int)theBusiness.getCityMarket().getJobStats().getMean();
+		}else if(hiringNeed == 3){
+			double stdDev = theBusiness.getCityMarket().getJobStats().getStandardDeviation();
+			double mean = theBusiness.getCityMarket().getJobStats().getMean();
+			rateToHire = (int) (mean + stdDev);
+		}else if(hiringNeed == 4){
+			double stdDev = theBusiness.getCityMarket().getJobStats().getStandardDeviation();
+			double mean = theBusiness.getCityMarket().getJobStats().getMean();
+			rateToHire = (int) (mean + 2 * stdDev);
+		}
 	}
-
+		
+	private int currentPayPerTick(){
+		int returnPay = 0;
+		
+		for(Job j : theBusiness.getJobs()){
+			returnPay += j.getRate();
+		}
+		
+		return returnPay;
+	}
+	
+	//Can set to a negative number
+	private void setNumberToHire(){
+		/*
+		 * How much money do we have?
+		 * Can we last for X ticks before folding - assuming no income? 
+		 * Fire until we can survive for X ticks, or hire until we can just barely survive for X ticks
+		 */
+	}
 	
 	/*
-	 * What is the rate needed to pay in order to hire people?
-	 * Based on that, how many can we hire and keep for X amount of time assuming no income?
-	 * Do we need to fire anyone so we can survive for Y amount of time, assuming no income?
-	 * Repeat? 
+	 * Logic for firing
 	 */
+	
+	/*
+	 * logic for hiring
+	 */
+
 }

@@ -6,6 +6,7 @@ import enums.Resources;
 
 
 public class Business implements Agent {
+	private City city;
 	protected Storage warehouse;
 	
 	protected HashMap<Resources,Integer> inputPerLabor;
@@ -19,6 +20,11 @@ public class Business implements Agent {
 	protected int maxWorkerCount;
 	
 	protected List<Job> jobs;
+	public Business(Resources[] inResTypes, Resources[] outResTypes, City c){
+		warehouse = new Storage(inResTypes, outResTypes);
+		city = c;
+	}
+	
 	public Business(Resources[] inResTypes, Resources[] outResTypes){
 		warehouse = new Storage(inResTypes, outResTypes);
 	}
@@ -111,6 +117,18 @@ public class Business implements Agent {
 	
 	public int getGoldPerLabor(){
 		return goldPerLabor;
+	}
+
+	public City getCity(){
+		return city;
+	}
+	
+	public Marketplace getCityMarket(){
+		return city.getMarketplace();
+	}
+	
+	public List<Job> getJobs(){
+		return jobs;
 	}
 	
 	public void tick(){

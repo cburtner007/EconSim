@@ -6,13 +6,13 @@ import Main.JobOffer;
 import Main.SellOffer;
 import Main.BuyOffer;
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
 
 public class CitizenBrain extends Brain {
 	private Citizen cRef; //we gotta make decisions about ourself, so we gotta know ourself
 	private int needFoodLevel = 0;	//0 = No need, 1 = Some Need, 2 = Much Need, 3 = Desperate
-	private SummaryStatistics foodSellStats;
 	
 	private BuyOffer standingOffer = null;
 	
@@ -20,7 +20,6 @@ public class CitizenBrain extends Brain {
 	
 	public CitizenBrain(Citizen c){
 		this.cRef = c;
-		this.foodSellStats = new SummaryStatistics();
 	}
 	
 	@Override
@@ -82,6 +81,7 @@ public class CitizenBrain extends Brain {
 		if(standingOffer != null){
 			standingOffer.returnOffer();
 		}
+		DescriptiveStatistics foodSellStats = cRef.getCityMarket().getStatsForResource(Resources.WHEAT);
 		
 		BuyOffer bo = new BuyOffer();
 		bo.setResourceToBuy(Resources.WHEAT);

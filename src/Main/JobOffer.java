@@ -14,9 +14,16 @@ public class JobOffer {
 		owningMarket = m;
 	}
 	
+	public JobOffer (Business b, int payRate, int nLeftToHire, Marketplace m){
+		businessHiring = b;
+		pricePerLabor = b.getGoldPerLabor();
+		numberLeftToHire = nLeftToHire;
+		owningMarket = m;
+	}
+	
 	public void takeApplicant(Citizen c){
 		if(numberLeftToHire > 0){
-			Job theJob = new Job(c, pricePerLabor);
+			Job theJob = new Job(c, pricePerLabor, businessHiring);
 			businessHiring.hire(theJob);
 			c.setJob(theJob);
 			owningMarket.getJobStats().addValue(pricePerLabor);

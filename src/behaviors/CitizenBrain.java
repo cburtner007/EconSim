@@ -33,7 +33,7 @@ public class CitizenBrain extends Brain {
 	}
 	
 	private void decideJobNeed() {
-		if(this.cRef.getIsEmployed()){
+		if(!this.cRef.getIsEmployed()){
 			needsNewJob = true;
 		} else if(!canAffordFood()){
 			needsNewJob = true;

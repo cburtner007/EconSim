@@ -103,10 +103,23 @@ public class Business implements Agent {
 		return returnFlag;
 	}
 	
+	public void setAllRates(int newRate)
+	{
+		for(Job j : jobs)
+		{
+			j.setRate(newRate);
+		}
+	}
+	
 	public void addGold(int g){
 		this.gold += g;
 	}
 	
+	public int getGold(){
+		return gold;
+	}
+	
+	//This is a getter. Why did I do this?
 	public int checkGold(){
 		return gold;
 	}
@@ -133,5 +146,15 @@ public class Business implements Agent {
 	
 	public void tick(){
 		this.produce();
+	}
+	
+	public int getCurrentWorkerCount()
+	{
+		return currentWorkerCount;
+	}
+	
+	public int getMaxWorkerCount()
+	{
+		return maxWorkerCount;
 	}
 }

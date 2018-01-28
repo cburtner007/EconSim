@@ -5,10 +5,17 @@ package Main;
  *
  */
 public class Job {
+	private Business employer;
 	private Citizen employee;
 	private int rate;
 
 	public Job(Citizen c, int rate){
+		employee = c;
+		c.setJob(this);
+		this.rate = rate;
+	}
+	
+	public Job(Citizen c, int rate, Business employer){
 		employee = c;
 		c.setJob(this);
 		this.rate = rate;
@@ -21,7 +28,10 @@ public class Job {
 	}
 
 	public void terminate() {
+		employee.setJob(null);
+		employer.removeJob(this);
 		employee = null;
+		employer = null;
 	}
 
 	public Citizen getEmployee() {
@@ -30,5 +40,10 @@ public class Job {
 	
 	public int getRate(){
 		return rate;
+	}
+	
+	public void setRate(int r)
+	{
+		rate = r;
 	}
 }

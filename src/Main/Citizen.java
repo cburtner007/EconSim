@@ -60,7 +60,6 @@ public class Citizen implements Agent{
 	
 	public void quitJob(){
 		this.job.terminate();
-		this.job = null;
 	}
 	
 	public void takeJob(JobOffer jo){

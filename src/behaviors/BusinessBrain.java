@@ -32,10 +32,22 @@ public class BusinessBrain extends Brain{
 	
 	private void monitorState()
 	{
-		
+
 	}
 	
-	private void setHiringNeed()
+	//-------------Buying and Selling Routines-------------------------
+	private void setInputNeed()
+	{
+		//The less we have, longer we've been buying for, more we need input
+		//The business needs to be able to say how much input it has 
+	}
+	
+	//Buy until we can survive for X ticks
+	
+	//Total sale is always higher
+	
+	//---------------Hiring and Firing Routines -----------------------
+	private void setHiringNeed() 
 	{
 		boolean underCapacity = (theBusiness.getCurrentWorkerCount() < theBusiness.getMaxWorkerCount());
 		if (hiringLength == 0 && underCapacity && !losingWorkers)
